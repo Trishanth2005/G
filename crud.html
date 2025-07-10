@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CRUD Example</title>
+  <style>
+  body {
+  font-family: "Segoe UI", sans-serif;
+  background: linear-gradient(to right, #f2f4f8, #e0ecff);
+  margin: 30px;
+  color: #333;
+}
+
+h1 {
+  text-align: center;
+  color: #2c3e50;
+  font-size: 28px;
+  margin-bottom: 30px;
+}
+
+form {
+  background: linear-gradient(to right, #ffffff, #f9fafe);
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(71, 185, 10, 0.1);
+  max-width: 500px;
+  margin: auto;
+}
+
+input {
+  display: block;
+  width: 94%;
+  margin: 12px auto;
+  padding: 12px;
+  border: 1px solid #b0c4de;
+  border-radius: 6px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+input:focus {
+  border-color: #3498db;
+  outline: none;
+}
+
+button {
+  display: block;
+  margin: 15px auto;
+  padding: 12px 24px;
+  background: linear-gradient(to right, #6a11cb, #2575fc);
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: linear-gradient(to right, #2575fc, #6a11cb);
+}
+
+table {
+  width: 95%;
+  margin: 40px auto;
+  border-collapse: collapse;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+th {
+  background-color: #34495e;
+  color: #fff;
+  padding: 14px;
+  font-size: 16px;
+}
+
+td {
+  padding: 14px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+  font-size: 15px;
+}
+
+td button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  color: #fff;
+}
+
+/* Arrange Edit and Delete buttons side by side */
+td:last-child {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+td button:first-child {
+  background: linear-gradient(to right, #00b09b, #96c93d);
+}
+
+td button:first-child:hover {
+  background: linear-gradient(to right, #96c93d, #00b09b);
+}
+
+td button:last-child {
+  background: linear-gradient(to right, #f85032, #e73827);
+}
+
+td button:last-child:hover {
+  background: linear-gradient(to right, #e73827, #f85032);
+}
+
+
+  </style>
+</head>
+<body>
+  <h1>Users Information</h1>
+
+  <form id="userForm">
+    <input type="text" id="name" placeholder="Enter The Name:" required>
+    <input type="email" id="email" placeholder="Enter The Email:" required>
+    <button type="submit">Add User</button>
+  </form>
+
+  <table id="userTable">
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const userForm = document.getElementById('userForm');
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    const userTableBody = document.querySelector('#userTable tbody');
+
+    let users = [];
+    let editIndex = null;
+
+    userForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const name = nameInput.value.trim();
+      const email = emailInput.value.trim();
+
+      if (!name || !email) return;
+
+      if (editIndex === null) {
+        users.push({ name, email });
+      } else {
+        users[editIndex] = { name, email };
+        editIndex = null;
+      }
+
+      userForm.reset();
+      renderTable();
+    });
+
+    function renderTable() {
+      userTableBody.innerHTML = '';
+      users.forEach((user, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${user.name}</td>
+          <td>${user.email}</td>
+          <td>
+            <button onclick="editUser(${index})">Edit</button>
+            <button onclick="deleteUser(${index})">Delete</button>
+          </td>
+        `;
+        userTableBody.appendChild(row);
+      });
+    }
+
+    window.editUser = function(index) {
+      const user = users[index];
+      nameInput.value = user.name;
+      emailInput.value = user.email;
+      editIndex = index;
+    };
+
+
+  </script>
+</body>
+</html>
